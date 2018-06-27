@@ -9,16 +9,18 @@ import numpy as np
 
 #mp.dps = 16
 
+### Constants
+
+jx = 100 ## This should be constant.
+
 ### Arrays
 
 # Initializing Numpy arrays of size 100 with entries as 0's
-x = np.zeros(100)
-u = np.zeros(100)
-f = np.zeros(100)
+x = np.zeros(jx)
+u = np.zeros(jx)
+f = np.zeros(jx)
 
 ### Variables
-
-jx = 100 ## This should be constant.
 
 ## Time control parameters
 nstop = 100
@@ -30,7 +32,6 @@ ns = 0
 nx = nstop/nskip + 1
 
 ## Velocity
-
 cs = 1.0
 
 ### Setting Initial Conditions
@@ -41,10 +42,7 @@ pi = np.pi
 ####### Checking if numpy arrays work as intended; they do
 #x = np.append(x,2)
 #u = np.append(u,3.2)
-
-
 #print pi
-
 #######
 
 ## grid
@@ -53,6 +51,7 @@ x[0] = dx
 for i in range(0,jx-1):
     x[i+1] = x[i] + dx
 
+## variable
 for i in range(0,jx/2):
     u[i] = 1.0
 
@@ -61,7 +60,7 @@ for i in range(jx/2, jx):
 
 ### Output initial condition ###
 
-print " " + ' write    step=' + "{:8}".format(ns) + ' time=' + "{:5.3e}".format(time)
+print " " + ' write    step=' + "{:8}".format(ns) + ' time=' + "{:10.3e}".format(time)
 
 file = open("out.dat","w")
 
@@ -73,14 +72,14 @@ file.write("{:5}".format(ns) + "," + "{:6.2f}".format(time) + "\n")
 
 for i in range(0,jx):
 	#print "Writing " + "{:5.1f}".format(x[i]) + "," + "{:10.7f}".format(u[i]) + " to file out.dat"
-	file.write("{:5.1f}".format(x[i]) + "," + "{:10.7f}".format(u[i]) + "\n")		
+	file.write("{:5.1f}".format(x[i]) + "," + "{:10.7f}".format(u[i]) + "\n")
 
 
 ### Time integration
 while ns < nstop:
 	ns += 1
 	# print 'This is ns: ', ns
-	
+
 	# time spacing
 	safety = 0.25
 	dt = safety*dx/cs
@@ -91,24 +90,24 @@ while ns < nstop:
 	# start >>>
 	for i in range(0,jx-1):
 		f[i] = 0.5*cs*(u[i+1]+u[i])
-	
+
 	f[jx-1] = f[jx-2]
-	
+
 	for i in range(1,jx-1):
 		u[i] = u[i] - dt/dx*(f[i]-f[i-1])
 
 	u[1] = u[2]
 	u[jx-1] = u[jx-2]
 	#end >>>
-	
+
 	## data output
-	if ns%nskip == 0:
-		print " " + ' write    step=' + "{:8}".format(ns) + ' time=' + "{:5.3e}".format(time)
+	if ns % nskip == 0:
+		print " " + ' write    step=' + "{:8}".format(ns) + ' time=' + "{:10.3e}".format(time)
 		file.write("{:5}".format(ns) + "," + "{:6.2f}".format(time) + "\n")
 		for i in range(0,jx):
 			# print "Writing " + "{:5.1f}".format(x[i]) + "," + "{:10.7f}".format(u[i]) + " to file out.dat"
 			file.write("{:5.1f}".format(x[i]) + "," + "{:10.7f}".format(u[i]) + "\n")
-	
+
 file.close()
 
 print '### normal stop ###'
@@ -120,4 +119,3 @@ print u
 print len(x)
 print len(u)
 """
-
